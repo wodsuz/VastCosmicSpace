@@ -12,7 +12,7 @@ export default function Home() {
       <header>
         <Header />
       </header>
-      <main className="flex-grow ">
+      <main>
         <Hero />
       </main>
     </div>
