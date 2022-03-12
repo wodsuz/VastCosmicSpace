@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Header from "../components/Header";
-
+import Hero from "../components/Hero";
 export default function Home() {
   return (
     <div className="w-full min-h-screen bg-blue-300">
@@ -12,6 +12,9 @@ export default function Home() {
       <header>
         <Header />
       </header>
+      <main className="flex-grow ">
+        <Hero />
+      </main>
     </div>
   );
 }

@@ -134,11 +134,11 @@ export const mintNFT = async (mintAmount) => {
   const transactionParameters = {
     to: contractAddress, // Required except during contract publications.
     from: window.ethereum.selectedAddress, // must match user's active address.
-    value: parseInt(web3.utils.toWei("0.0019", "ether") * mintAmount).toString(
+    value: parseInt(web3.utils.toWei("0.0010", "ether") * mintAmount).toString(
       16
     ), // hex
     gasLimit: "0",
-    data: nftContract.methods.mintEmoji(mintAmount).encodeABI(), //make call to NFT smart contract
+    data: nftContract.methods.mintPlanet(mintAmount).encodeABI(), //make call to NFT smart contract
   };
   //sign the transaction via Metamask
   try {
