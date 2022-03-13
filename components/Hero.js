@@ -1,32 +1,35 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useStatus } from "../context/statusContext";
-
+import Swal from "sweetalert2";
 import {
   getMaxMintAmount,
   getTotalSupply,
   getNftPrice,
   mintNFT,
   getSaleState,
+  getCurrentWalletConnected,
 } from "../utils/interact";
 
 const Hero = () => {
   const { status, setStatus } = useStatus();
-
   const [count, setCount] = useState(1);
+  const [count_two, setCount_two] = useState(2);
+  const [count_three, setCount_three] = useState(3);
   const [maxMintAmount, setMaxMintAmount] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
   const [nftPrice, setNftPrice] = useState("0.001");
   const [isSaleActive, setIsSaleActive] = useState(false);
-
+  const [curconwallet, setCurconwallet] = useState("");
+  const [show, setShow] = useState(true);
   useEffect(() => {
     const prepare = async () => {
       setMaxMintAmount(await getMaxMintAmount());
       setNftPrice(await getNftPrice());
       setIsSaleActive(await getSaleState());
+      setCurconwallet(await getCurrentWalletConnected());
       await updateTotalSupply();
     };
-
     prepare();
   });
 
@@ -35,18 +38,18 @@ const Hero = () => {
     setTotalSupply(mintedCount);
   };
 
-  const incrementCount = () => {
-    if (count < maxMintAmount) setCount(count + 1);
-  };
-
-  const decrementCount = () => {
-    if (count > 1) setCount(count - 1);
-  };
-
-  const mintEmojiFace = async () => {
-    const { status } = await mintNFT(count);
-    setStatus(status);
-    // We minted a new emoji face, so we need to update the total supply
+  const mintEmojiFace = async (id) => {
+    if (id < 2) {
+      const { status } = await mintNFT(count);
+      setStatus(status);
+    } else if (id < 3) {
+      const { status } = await mintNFT(count_two);
+      setStatus(status);
+    } else {
+      const { status } = await mintNFT(count_three);
+      setStatus(status);
+    }
+    // We minted a new planet, so we need to update the total supply
     updateTotalSupply();
   };
 
@@ -73,7 +76,9 @@ const Hero = () => {
                 <div className="flex items-center mt-6 text-3xl font-bold text-gray-200">
                   <button
                     className="flex items-center justify-center w-12 h-12 text-center text-black bg-white rounded-md hover:bg-blue-200"
-                    onClick={incrementCount}
+                    onClick={() => {
+                      if (count < maxMintAmount) setCount(count + 1);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +100,9 @@ const Hero = () => {
 
                   <button
                     className="flex items-center justify-center w-12 h-12 text-center bg-white rounded-md hover:bg-blue-200"
-                    onClick={decrementCount}
+                    onClick={() => {
+                      if (count > 1) setCount(count - 1);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +129,7 @@ const Hero = () => {
                 {/* Mint Button */}
                 <button
                   className="px-4 py-2 mt-6 text-center text-white uppercase bg-blue-500 border-b-4 border-blue-700 rounded hover:bg-blue-400 hover:border-blue-500"
-                  onClick={mintEmojiFace}
+                  onClick={() => mintEmojiFace(1)}
                 >
                   Mint now!
                 </button>
@@ -153,7 +160,10 @@ const Hero = () => {
                 <div className="flex items-center mt-6 text-3xl font-bold text-gray-200">
                   <button
                     className="flex items-center justify-center w-12 h-12 text-center text-black bg-white rounded-md hover:bg-blue-200"
-                    onClick={incrementCount}
+                    onClick={() => {
+                      if (count_two < maxMintAmount)
+                        setCount_two(count_two + 1);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -171,11 +181,13 @@ const Hero = () => {
                     </svg>
                   </button>
 
-                  <h2 className="mx-8">{count}</h2>
+                  <h2 className="mx-8">{count_two}</h2>
 
                   <button
                     className="flex items-center justify-center w-12 h-12 text-center bg-white rounded-md hover:bg-blue-200"
-                    onClick={decrementCount}
+                    onClick={() => {
+                      if (count_two > 1) setCount_two(count_two - 1);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +214,7 @@ const Hero = () => {
                 {/* Mint Button */}
                 <button
                   className="px-4 py-2 mt-6 text-center text-white uppercase bg-blue-500 border-b-4 border-blue-700 rounded hover:bg-blue-400 hover:border-blue-500"
-                  onClick={mintEmojiFace}
+                  onClick={() => mintEmojiFace(2)}
                 >
                   Mint now!
                 </button>
@@ -233,7 +245,10 @@ const Hero = () => {
                 <div className="flex items-center mt-6 text-3xl font-bold text-gray-200">
                   <button
                     className="flex items-center justify-center w-12 h-12 text-center text-black bg-white rounded-md hover:bg-blue-200"
-                    onClick={incrementCount}
+                    onClick={() => {
+                      if (count_three < maxMintAmount)
+                        setCount_three(count_three + 1);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -251,11 +266,13 @@ const Hero = () => {
                     </svg>
                   </button>
 
-                  <h2 className="mx-8">{count}</h2>
+                  <h2 className="mx-8">{count_three}</h2>
 
                   <button
                     className="flex items-center justify-center w-12 h-12 text-center bg-white rounded-md hover:bg-blue-200"
-                    onClick={decrementCount}
+                    onClick={() => {
+                      if (count_three > 1) setCount_three(count_three - 1);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +299,7 @@ const Hero = () => {
                 {/* Mint Button */}
                 <button
                   className="px-4 py-2 mt-6 text-center text-white uppercase bg-blue-500 border-b-4 border-blue-700 rounded hover:bg-blue-400 hover:border-blue-500"
-                  onClick={mintEmojiFace}
+                  onClick={() => mintEmojiFace(3)}
                 >
                   Mint now!
                 </button>
@@ -296,13 +313,53 @@ const Hero = () => {
           </div>
         </div>
         {/* Status */}
-
         {status && (
           <div className="flex items-center justify-center px-4 py-4 mt-8 font-semibold text-white bg-gray-900 rounded-md ">
             {status}
           </div>
         )}
+        <div className="border-t-2 border-white mt-5"> </div>
       </div>
+      {curconwallet.address > 41 ? (
+        <>
+          <div className="flex flex-col items-center text-lg">
+            {" "}
+            Welcome to Vast Cosmic Space, your wallet address is:{" "}
+            <div
+              className="text-sky-800 hover:text-sky-600 cursor-pointer"
+              onClick={() => {
+                navigator.clipboard.writeText(curconwallet.address);
+                Swal.fire({
+                  icon: "success",
+                  title: "Wallet address copied",
+                  text: "Your wallet address has been copied succesfully.",
+                  position: "top",
+                  background: "white",
+                  allowOutsideClick: false,
+                  allowEscapeKey: false,
+                  allowEnterKey: false,
+                  showConfirmButton: false,
+                  showCancelButton: false,
+                  timer: 3000,
+                });
+              }}
+            >
+              {curconwallet.address}{" "}
+            </div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 gap-y-10 gap-x-6">
+              <div>1</div>
+              <div>2</div>
+              <div>3</div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div>
+          {" "}
+          No wallet Connected, Please Connect your wallet in order to
+          mint,create setalite and much more!{" "}
+        </div>
+      )}
     </main>
   );
 };

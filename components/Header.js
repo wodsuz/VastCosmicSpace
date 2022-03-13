@@ -11,11 +11,11 @@ import {
 const Header = () => {
   const { setStatus } = useStatus();
   const [walletAddress, setWalletAddress] = useState("");
-
   const connectWalletPressed = async () => {
     const walletResponse = await connectWallet();
     setWalletAddress(walletResponse.address);
     setStatus(walletResponse.status);
+    console.log("setWalletAd" + walletResponse.address);
   };
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Header = () => {
           {/* Logo */}
           <Link href="#">
             <a className="text-2xl font-bold">
-              <span className="pr-2 text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-blue-600">
+              <span className="pr-2 text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 via-purple-700 to-pink-500">
                 Vast Cosmic
               </span>
               Space
