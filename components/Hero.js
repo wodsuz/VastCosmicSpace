@@ -21,7 +21,7 @@ const Hero = () => {
   const [nftPrice, setNftPrice] = useState("0.001");
   const [isSaleActive, setIsSaleActive] = useState(false);
   const [curconwallet, setCurconwallet] = useState("");
-  const [show, setShow] = useState(true);
+  const nftitemscount = ["1", "2", "3", "4", "5"];
   useEffect(() => {
     const prepare = async () => {
       setMaxMintAmount(await getMaxMintAmount());
@@ -346,10 +346,10 @@ const Hero = () => {
             >
               {curconwallet.address}{" "}
             </div>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 gap-y-10 gap-x-6">
-              <div>1</div>
-              <div>2</div>
-              <div>3</div>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-6 gap-y-10 gap-x-6">
+              {nftitemscount.map((item) => (
+                <div key={item.id}> {item} </div>
+              ))}
             </div>
           </div>
         </>
