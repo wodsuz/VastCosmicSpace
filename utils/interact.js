@@ -177,3 +177,47 @@ export const mintNFT = async (mintAmount, ident) => {
     };
   }
 };
+
+export const csetalite = async (ident) => {
+  if (!window.ethereum.selectedAddress) {
+    return {
+      success: false,
+      status: (
+        <p>
+          🦊 Connect to Metamask using{" "}
+          <span className="px-2 text-purple-600">Connect Wallet</span> button.
+        </p>
+      ),
+    };
+  }
+  ("");
+
+  //set up your Ethereum transaction
+  const transactionParameters = {
+    to: contractAddress, // Required except during contract publications.
+    from: window.ethereum.selectedAddress, // must match user's active address.
+    value: parseInt(web3.utils.toWei("0.0010", "ether") * 0.5).toString(16), // hex
+    gasLimit: "0",
+    data: nftContract.methods.createSetalite(ident).encodeABI(), //make call to NFT smart contract
+  };
+  //sign the transaction via Metamask
+  try {
+    const txHash = await window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [transactionParameters],
+    });
+    console.log(transactionParameters);
+    console.log(txHash);
+    return {
+      success: true,
+      status:
+        "✅ Check out your transaction on Etherscan: https://rinkeby.etherscan.io/tx/" +
+        txHash,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      status: "😥 Something went wrong: " + error.message,
+    };
+  }
+};

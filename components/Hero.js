@@ -11,6 +11,7 @@ import {
   getCurrentWalletConnected,
   tokenofowner,
   tokenuri,
+  csetalite,
 } from "../utils/interact";
 
 const Hero = () => {
@@ -24,9 +25,8 @@ const Hero = () => {
   const [isSaleActive, setIsSaleActive] = useState(false);
   const [curconwallet, setCurconwallet] = useState("");
   const [tokenowner, setTokenowner] = useState();
-  const nftitemscount = [];
-  const [idtoken, setidtoken] = useState();
-  const tokenids = [];
+  const [tokid, setTokid] = useState([]);
+  const tokenids = ["-"];
   useEffect(() => {
     const prepare = async () => {
       setMaxMintAmount(await getMaxMintAmount());
@@ -38,7 +38,9 @@ const Hero = () => {
     };
     prepare();
   });
-
+  const imgurl = (url) => {
+    return "/images/" + url + ".png";
+  };
   const updateTotalSupply = async () => {
     const mintedCount = await getTotalSupply();
     setTotalSupply(mintedCount);
@@ -50,16 +52,35 @@ const Hero = () => {
     });
     */
     console.log(tokenowner.length);
+    tokenids = [];
     for (let i = 1; i <= tokenowner.length; i++) {
       try {
-        tokenids[i] = await tokenuri(i);
+        tokenids[i] = (await tokenuri(i)).toString();
       } catch {
         tokenids[i] = [""];
       }
     }
+    setTokid(tokenids);
     console.log("id: " + tokenids);
   };
 
+  const createSet = async (id) => {
+    console.log(id === "9");
+    if (id === "1") {
+      const { status } = await csetalite(1);
+      setStatus(status);
+    } else if (id === "9") {
+      const { status } = await csetalite(2);
+      setStatus(status);
+    } else if (id === "11") {
+      const { status } = await csetalite(3);
+      setStatus(status);
+    } else {
+      window.alert("Setalite not avaliable!");
+    }
+    // We minted a new planet, so we need to update the total supply
+    updateTotalSupply();
+  };
   const mintEmojiFace = async (id) => {
     if (id < 2) {
       const { status } = await mintNFT(count, 1);
@@ -74,7 +95,6 @@ const Hero = () => {
     // We minted a new planet, so we need to update the total supply
     updateTotalSupply();
   };
-
   return (
     <main id="main" className="py-16 h-min ">
       <div className="items-center max-w-6xl pt-4 pb-4 mx-auto ">
@@ -342,14 +362,7 @@ const Hero = () => {
         )}
         <div className="border-t-2 border-white mt-5"></div>
       </div>
-      <button
-        className="bg-red-500 text-blue-300"
-        onClick={() => {
-          deneme();
-        }}
-      >
-        Deneme
-      </button>{" "}
+
       {curconwallet.address > 41 ? (
         <>
           <div className="flex flex-col items-center text-lg">
@@ -376,15 +389,42 @@ const Hero = () => {
             >
               {curconwallet.address}{" "}
             </div>
+            <button
+              className="px-4 py-2 mt-6 mb-6 text-center text-white uppercase bg-blue-500 border-b-4 border-blue-700 rounded hover:bg-blue-400 hover:border-blue-500"
+              onClick={() => {
+                deneme();
+              }}
+            >
+              Get my NFT's
+            </button>{" "}
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-6 gap-y-10 gap-x-6">
-              {nftitemscount.map((item) => (
-                <div key={item.id}> {item} </div>
+              {tokid.map((id, index) => (
+                <div className="flex flex-col items-center align-center ml-3">
+                  <Image
+                    src={imgurl(id.substring(54, id.length - 5))}
+                    width="270"
+                    height="270"
+                    alt="VastCosmicSpace"
+                    className="rounded-md"
+                  />
+                  <li key={id.key}>{index}</li>
+                  <button
+                    className="px-4 py-2 mt-6 mb-6 text-center text-white uppercase bg-blue-500 border-b-4 border-blue-700 rounded hover:bg-blue-400 hover:border-blue-500"
+                    onClick={() => {
+                      {
+                        createSet(id.substring(54, id.length - 5));
+                      }
+                    }}
+                  >
+                    Setalite
+                  </button>{" "}
+                </div>
               ))}
             </div>
           </div>
         </>
       ) : (
-        <div>
+        <div className="flex flex-col items-center text-lg">
           {" "}
           No wallet Connected, Please Connect your wallet in order to
           mint,create setalite and much more!{" "}
