@@ -9,8 +9,8 @@ import {
   mintNFT,
   getSaleState,
   getCurrentWalletConnected,
-  getbaseuri,
   tokenofowner,
+  tokenuri,
 } from "../utils/interact";
 
 const Hero = () => {
@@ -23,9 +23,10 @@ const Hero = () => {
   const [nftPrice, setNftPrice] = useState("0.001");
   const [isSaleActive, setIsSaleActive] = useState(false);
   const [curconwallet, setCurconwallet] = useState("");
-  const [baseuri, setbaseuri] = useState("");
   const [tokenowner, setTokenowner] = useState();
-  const nftitemscount = ["1", "2", "3", "4", "5"];
+  const nftitemscount = [];
+  const [idtoken, setidtoken] = useState();
+  const tokenids = [];
   useEffect(() => {
     const prepare = async () => {
       setMaxMintAmount(await getMaxMintAmount());
@@ -42,11 +43,21 @@ const Hero = () => {
     const mintedCount = await getTotalSupply();
     setTotalSupply(mintedCount);
   };
-  const deneme = () => {
+  const deneme = async () => {
+    /*
     Object.entries(tokenowner).forEach((keyValuePair) => {
       console.log("deneme: ", keyValuePair);
     });
-    console.log(tokenowner._method.outputs.length);
+    */
+    console.log(tokenowner.length);
+    for (let i = 1; i <= tokenowner.length; i++) {
+      try {
+        tokenids[i] = await tokenuri(i);
+      } catch {
+        tokenids[i] = [""];
+      }
+    }
+    console.log("id: " + tokenids);
   };
 
   const mintEmojiFace = async (id) => {

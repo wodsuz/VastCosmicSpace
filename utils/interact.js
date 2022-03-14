@@ -122,9 +122,14 @@ export const getSaleState = async () => {
 };
 
 export const tokenofowner = async () => {
-  var result = await nftContract.methods.tokensOfOwner(
-    window.ethereum.selectedAddress
-  );
+  var result = await nftContract.methods
+    .tokensOfOwner(window.ethereum.selectedAddress)
+    .call();
+  return Object.values(result);
+};
+
+export const tokenuri = async (id) => {
+  var result = await nftContract.methods.tokenURI(id).call();
   return result;
 };
 
