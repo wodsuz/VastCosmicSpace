@@ -9,6 +9,8 @@ import {
   mintNFT,
   getSaleState,
   getCurrentWalletConnected,
+  getbaseuri,
+  tokenofowner,
 } from "../utils/interact";
 
 const Hero = () => {
@@ -21,6 +23,8 @@ const Hero = () => {
   const [nftPrice, setNftPrice] = useState("0.001");
   const [isSaleActive, setIsSaleActive] = useState(false);
   const [curconwallet, setCurconwallet] = useState("");
+  const [baseuri, setbaseuri] = useState("");
+  const [tokenowner, setTokenowner] = useState();
   const nftitemscount = ["1", "2", "3", "4", "5"];
   useEffect(() => {
     const prepare = async () => {
@@ -28,6 +32,7 @@ const Hero = () => {
       setNftPrice(await getNftPrice());
       setIsSaleActive(await getSaleState());
       setCurconwallet(await getCurrentWalletConnected());
+      setTokenowner(await tokenofowner());
       await updateTotalSupply();
     };
     prepare();
@@ -37,16 +42,22 @@ const Hero = () => {
     const mintedCount = await getTotalSupply();
     setTotalSupply(mintedCount);
   };
+  const deneme = () => {
+    Object.entries(tokenowner).forEach((keyValuePair) => {
+      console.log("deneme: ", keyValuePair);
+    });
+    console.log(tokenowner._method.outputs.length);
+  };
 
   const mintEmojiFace = async (id) => {
     if (id < 2) {
-      const { status } = await mintNFT(count);
+      const { status } = await mintNFT(count, 1);
       setStatus(status);
     } else if (id < 3) {
-      const { status } = await mintNFT(count_two);
+      const { status } = await mintNFT(count_two, 2);
       setStatus(status);
     } else {
-      const { status } = await mintNFT(count_three);
+      const { status } = await mintNFT(count_three, 3);
       setStatus(status);
     }
     // We minted a new planet, so we need to update the total supply
@@ -318,8 +329,16 @@ const Hero = () => {
             {status}
           </div>
         )}
-        <div className="border-t-2 border-white mt-5"> </div>
+        <div className="border-t-2 border-white mt-5"></div>
       </div>
+      <button
+        className="bg-red-500 text-blue-300"
+        onClick={() => {
+          deneme();
+        }}
+      >
+        Deneme
+      </button>{" "}
       {curconwallet.address > 41 ? (
         <>
           <div className="flex flex-col items-center text-lg">

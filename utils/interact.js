@@ -2,7 +2,7 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(process.env.NEXT_PUBLIC_API_URL);
 
 const contract = require("../artifacts/contracts/VastSpaceNFT.sol/VastSpacePlanets.json");
-const contractAddress = "0xC2C310107039c11D5C37A227A338e6D04c4deddE";
+const contractAddress = "0x51537f785062601812CD4dCe79369fF259f53396";
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress);
 
 export const connectWallet = async () => {
@@ -101,6 +101,10 @@ export const getMaxMintAmount = async () => {
   return result;
 };
 
+export const getbaseuri = async () => {
+  const result = await nftContract.methods.baseURI().call();
+  return result;
+};
 export const getTotalSupply = async () => {
   const result = await nftContract.methods.totalSupply().call();
   return result;
@@ -117,7 +121,14 @@ export const getSaleState = async () => {
   return result;
 };
 
-export const mintNFT = async (mintAmount) => {
+export const tokenofowner = async () => {
+  var result = await nftContract.methods.tokensOfOwner(
+    window.ethereum.selectedAddress
+  );
+  return result;
+};
+
+export const mintNFT = async (mintAmount, ident) => {
   if (!window.ethereum.selectedAddress) {
     return {
       success: false,
@@ -138,7 +149,7 @@ export const mintNFT = async (mintAmount) => {
       16
     ), // hex
     gasLimit: "0",
-    data: nftContract.methods.mintPlanet(mintAmount).encodeABI(), //make call to NFT smart contract
+    data: nftContract.methods.mintPlanet(mintAmount, ident).encodeABI(), //make call to NFT smart contract
   };
   //sign the transaction via Metamask
   try {
@@ -146,6 +157,8 @@ export const mintNFT = async (mintAmount) => {
       method: "eth_sendTransaction",
       params: [transactionParameters],
     });
+    console.log(transactionParameters);
+    console.log(txHash);
     return {
       success: true,
       status:

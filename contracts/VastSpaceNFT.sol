@@ -12,11 +12,12 @@
       using Strings for uint256;
     
       uint256 public constant tokenPrice = 0.001 ether ; // 0.001 ETH 
-      uint256 public constant setalite_price = 0.0005 ether; // 0.0005
-      uint256 public constant maxTokenPurchase = 10;
+      uint256 public constant setalite_price = 0.0005 ether; // 0.0005 
+      uint256 public constant maxTokenPurchase = 100;
       uint256 public constant MAX_TOKENS = 1000000;
     
       string public baseURI = ""; // IPFS URI WILL BE SET AFTER ALL TOKENS SOLD OUT
+      // uint256[3] public memory BaseURI_array = []
     
       bool public saleIsActive = false;
       bool public presaleIsActive = false;
@@ -24,8 +25,9 @@
     
       mapping(address => bool) private _presaleList;
       mapping(address => uint256) private _presaleListClaimed;
+      uint public iden = 0;
     
-      uint256 public presaleMaxMint = 10;
+      uint256 public presaleMaxMint = 100;
       uint256 public devReserve = 64;
     
       event EmojiMinted(uint256 tokenId, address owner);
@@ -52,17 +54,17 @@
       function reserveTokens(address _to, uint256 _reserveAmount)
         external
         onlyOwner
-      {
-        require(
-          _reserveAmount > 0 && _reserveAmount <= devReserve,
-          "Not enough reserve left for team"
-        );
-        for (uint256 i = 0; i < _reserveAmount; i++) {
-          uint256 id = totalSupply();
-          _safeMint(_to, id);
-        }
-        devReserve = devReserve.sub(_reserveAmount);
-      }
+            {
+                require(
+                _reserveAmount > 0 && _reserveAmount <= devReserve,
+                "Not enough reserve left for team"
+                );
+                for (uint256 i = 0; i < _reserveAmount; i++) {
+                uint256 id = totalSupply();
+                _safeMint(_to, id);
+                }
+                devReserve = devReserve.sub(_reserveAmount);
+            }
     
       function toggleSaleState() external onlyOwner {
         saleIsActive = !saleIsActive;
@@ -91,7 +93,8 @@
         }
       }
     
-      function mintPlanet(uint256 numberOfTokens) external payable {
+      function mintPlanet(uint256 numberOfTokens,uint256 identifier ) external payable {
+        require(identifier>0, "Must choose one of the 3 planets to mint");
         require(saleIsActive, "Sale must be active to mint Token");
         require(
           numberOfTokens > 0 && numberOfTokens <= maxTokenPurchase,
@@ -105,7 +108,11 @@
           msg.value >= tokenPrice.mul(numberOfTokens),
           "Ether value sent is not correct"
         );
-    
+        if (identifier<2)  iden = 1;
+        else if (identifier<3)  iden = 9;
+        else if (identifier<4)  iden = 11;
+        else require(identifier>3,"You must choose one of the first 3 planets ");
+
         for (uint256 i = 0; i < numberOfTokens; i++) {
           uint256 id = totalSupply().add(1);
           if (totalSupply() < MAX_TOKENS) {
@@ -114,20 +121,23 @@
           }
         }
       }
-      function createSetalite(uint256 numberOfTokens) external payable {
+      function createSetalite(uint256 identifier) external payable {
           // check if user has at leats one item - false escape
           // check if at least one is planet
           // check if user paid enough amount 
           // Add new setalite on user NFTS
           // Remove planet from users NFTS
-    
-         for (uint256 i = 0; i < numberOfTokens; i++) {
-                uint256 id = totalSupply().add(1);
-                if (totalSupply() < MAX_TOKENS) {
-                    _safeMint(msg.sender, id);
-                    emit EmojiMinted(id, msg.sender);
-                }
-          }
+        require(identifier>0, "Must choose one of the 3 planets to create setalitte ");
+        require(saleIsActive, "Sale must be active to create setalite Token");
+        if (identifier<2)  iden = 22;
+        else if (identifier<3)  iden = 25;
+        else if (identifier<4)  iden = 26;
+        else require(identifier>3,"You must choose one of the 3 planets ");
+        uint256 id = totalSupply().add(1);
+        if (totalSupply() < MAX_TOKENS) {
+            _safeMint(msg.sender, id);
+            emit EmojiMinted(id, msg.sender);
+        }
       }
     
       function presaleEmoji(uint256 numberOfTokens) external payable {
@@ -171,13 +181,13 @@
       function removeFromPresaleList(address[] calldata addresses)
         external
         onlyOwner
-      {
-        for (uint256 i = 0; i < addresses.length; i++) {
-          require(addresses[i] != address(0), "Can't add the null address");
-    
-          _presaleList[addresses[i]] = false;
+        {
+          for (uint256 i = 0; i < addresses.length; i++) {
+            require(addresses[i] != address(0), "Can't add the null address");
+      
+            _presaleList[addresses[i]] = false;
+          }
         }
-      }
     
       function setPresaleMaxMint(uint256 maxMint) external onlyOwner {
         presaleMaxMint = maxMint;
@@ -193,22 +203,23 @@
         virtual
         override
         returns (string memory)
-      {
-        require(
-          _exists(tokenId),
-          "ERC721Metadata: URI query for nonexistent token"
-        );
-    
-        string memory currentBaseURI = _baseURI();
-    
-        if (isRevealed == false) {
-          return
-            " ://QmYGAp3Gz1m5UmFhV4PVRRPYE3HL1AmCwEKFPxng498vfb/hidden.json";
-        }
+          {
+            require(
+              _exists(tokenId),
+              "ERC721Metadata: URI query for nonexistent token"
+            );
+        
+            string memory currentBaseURI = _baseURI();
+        
+            if (isRevealed == false) {
+              return
+                " ://QmYGAp3Gz1m5UmFhV4PVRRPYE3HL1AmCwEKFPxng498vfb/hidden.json";
+            }
     
         return
           bytes(currentBaseURI).length > 0
-            ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), ".json"))
+            ? string(abi.encodePacked(currentBaseURI, iden.toString() , ".json"))
+            // ? string(abi.encodePacked(currentBaseURI, tokenId.toString(), ".json"))
             : "";
             
       }
