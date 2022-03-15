@@ -6,7 +6,7 @@ const StatusProvider = ({ children }) => {
   const [status, setStatus] = useState("");
 
   return (
-    <StatusContext.Provider value={{ status, setStatus }}>
+    <StatusContext.Provider value={{ status, setStatus }} key={status}>
       {children}
     </StatusContext.Provider>
   );

@@ -96,7 +96,7 @@ const Hero = () => {
     updateTotalSupply();
   };
   return (
-    <main id="main" className="py-16 h-min ">
+    <main id="main" className="py-16 h-min " key={"id"}>
       <div className="items-center max-w-6xl pt-4 pb-4 mx-auto ">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 gap-y-10 gap-x-6">
           <div className="flex flex-col items-center">
@@ -395,21 +395,26 @@ const Hero = () => {
                 deneme();
               }}
             >
-              Get my NFT's
+              Get my NFTs
             </button>{" "}
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-6 gap-y-10 gap-x-6">
               {tokid.map((id, index) => (
-                <div className="flex flex-col items-center align-center ml-3">
+                <div
+                  className="flex flex-col items-center align-center ml-3"
+                  key={id.key}
+                >
                   <Image
                     src={imgurl(id.substring(54, id.length - 5))}
                     width="270"
                     height="270"
                     alt="VastCosmicSpace"
                     className="rounded-md"
+                    key={id.key}
                   />
                   <li key={id.key}>{index}</li>
                   <button
                     className="px-4 py-2 mt-6 mb-6 text-center text-white uppercase bg-blue-500 border-b-4 border-blue-700 rounded hover:bg-blue-400 hover:border-blue-500"
+                    key={id.key}
                     onClick={() => {
                       {
                         createSet(id.substring(54, id.length - 5));
